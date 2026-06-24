@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EduNova — Lecturer Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:#1a2744; --navy-mid:#253460; --navy-light:#2e3f7a;
+      --accent:#3b5bdb; --accent-glow:rgba(59,91,219,.16);
+      --pink:#f472b6; --violet:#a78bfa; --sky:#93c5fd;
+      --white:#ffffff; --off-white:#f4f6fb; --text-dark:#1a2744;
+      --text-muted:#64748b; --border:#dde3f0;
+      --error:#ef4444; --success:#22c55e; --warn:#f59e0b;
+      --card-shadow:0 32px 80px rgba(26,39,68,.14),0 4px 20px rgba(26,39,68,.07);
+    }
+    html,body{min-height:100%;font-family:'DM Sans',sans-serif;color:var(--navy);}
+    body{display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:28px 16px 48px;
+      background:radial-gradient(ellipse 80% 60% at 5% 0%,rgba(59,91,219,.11) 0%,transparent 55%),
+        radial-gradient(ellipse 60% 50% at 95% 100%,rgba(167,139,250,.09) 0%,transparent 55%),
+        linear-gradient(160deg,#edf0fb 0%,#f8f9ff 50%,#fdf0f8 100%);overflow-x:hidden;}
+    body::before,body::after{content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;}
+    body::before{width:500px;height:500px;top:-180px;left:-180px;background:radial-gradient(circle,rgba(59,91,219,.09) 0%,transparent 70%);}
+    body::after{width:400px;height:400px;bottom:-150px;right:-130px;background:radial-gradient(circle,rgba(244,114,182,.09) 0%,transparent 70%);}
+
+    /* TOP BAR */
+    .topbar{position:relative;z-index:1;width:100%;max-width:900px;display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+    .topbar-logo svg{width:130px;height:auto;}
+    .topbar-login{font-size:.83rem;color:var(--text-muted);}
+    .topbar-login a{color:var(--accent);font-weight:600;text-decoration:none;}
+    .topbar-login a:hover{text-decoration:underline;}
+
+    /* WRAPPER */
+    .wrapper{position:relative;z-index:1;width:100%;max-width:900px;background:var(--white);border-radius:28px;box-shadow:var(--card-shadow);overflow:hidden;}
+
+    /* HEADER BANNER */
+    .form-header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-light) 60%,#3d4fa0 100%);padding:36px 48px 32px;position:relative;overflow:hidden;}
+    .form-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 90% 50%,rgba(59,91,219,.25) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 10% 80%,rgba(244,114,182,.12) 0%,transparent 60%);}
+    .header-dots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.06) 1.5px,transparent 1.5px);background-size:20px 20px;}
+    .header-content{position:relative;}
+    .header-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.85);font-size:.72rem;font-weight:600;padding:4px 12px;border-radius:100px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:12px;}
+    .header-badge svg{width:12px;height:12px;}
+    .form-header h1{font-family:'DM Serif Display',serif;font-size:1.85rem;color:#fff;margin-bottom:6px;}
+    .form-header p{font-size:.88rem;color:rgba(255,255,255,.65);max-width:480px;}
+
+    /* STEP BAR */
+    .step-bar{display:flex;align-items:flex-start;gap:0;padding:28px 48px 0;border-bottom:1px solid var(--border);overflow-x:auto;}
+    .step-item{flex:1;display:flex;flex-direction:column;align-items:center;position:relative;padding-bottom:20px;min-width:90px;}
+    .step-item:not(:last-child)::after{content:'';position:absolute;top:17px;left:calc(50% + 20px);right:calc(-50% + 20px);height:2px;background:var(--border);transition:background .4s;}
+    .step-item.done:not(:last-child)::after{background:var(--accent);}
+    .step-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--border);background:var(--white);font-size:.78rem;font-weight:700;color:var(--text-muted);transition:all .3s;margin-bottom:8px;position:relative;z-index:1;}
+    .step-item.active .step-circle{border-color:var(--accent);background:var(--accent);color:#fff;box-shadow:0 0 0 5px var(--accent-glow);}
+    .step-item.done .step-circle{border-color:var(--accent);background:var(--accent);color:#fff;}
+    .step-item.done .step-num{display:none;}
+    .step-item.done .step-circle::after{content:'✓';color:#fff;font-size:.75rem;font-weight:700;}
+    .step-label{font-size:.72rem;font-weight:600;color:var(--text-muted);text-align:center;text-transform:uppercase;letter-spacing:.4px;}
+    .step-item.active .step-label{color:var(--accent);}
+    .step-item.done .step-label{color:var(--navy);}
+
+    /* FORM BODY */
+    .form-body{padding:36px 48px 40px;}
+    .step-panel{display:none;animation:fadeIn .3s ease;}
+    .step-panel.active{display:block;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .section-label{font-size:.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+    .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
+
+    /* GRID */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+    .span-2{grid-column:span 2;}
+
+    /* FIELD */
+    .field{display:flex;flex-direction:column;}
+    .field label{font-size:.76rem;font-weight:600;color:var(--navy-mid);margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase;}
+    .field label .req{color:var(--pink);margin-left:2px;}
+    .input-wrap{position:relative;display:flex;align-items:center;}
+    .input-wrap svg.ico{position:absolute;left:13px;width:16px;height:16px;color:#b0bac9;pointer-events:none;transition:color .2s;}
+    .input-wrap input,.input-wrap select,.input-wrap textarea{width:100%;padding:0 14px 0 40px;height:48px;border:1.5px solid var(--border);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--navy);background:var(--off-white);outline:none;transition:border-color .2s,box-shadow .2s,background .2s;-webkit-appearance:none;}
+    .input-wrap textarea{height:90px;padding-top:12px;padding-bottom:12px;resize:vertical;line-height:1.5;}
+    .input-wrap select{cursor:pointer;}
+    .input-wrap input::placeholder,.input-wrap textarea::placeholder{color:#b0bac9;}
+    .input-wrap input:focus,.input-wrap select:focus,.input-wrap textarea:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 4px var(--accent-glow);}
+    .input-wrap input.err,.input-wrap select.err,.input-wrap textarea.err{border-color:var(--error);box-shadow:0 0 0 4px rgba(239,68,68,.09);}
+    .input-wrap input.ok,.input-wrap select.ok,.input-wrap textarea.ok{border-color:var(--success);}
+    .no-icon input,.no-icon select,.no-icon textarea{padding-left:14px;}
+    .toggle-pass{position:absolute;right:12px;background:none;border:none;cursor:pointer;color:var(--text-muted);padding:4px;display:flex;align-items:center;transition:color .2s;}
+    .toggle-pass:hover{color:var(--accent);}
+    .toggle-pass svg{width:16px;height:16px;}
+    .char-count{font-size:.72rem;color:var(--text-muted);text-align:right;margin-top:4px;}
+    .pass-strength{margin-top:6px;}
+    .strength-bar{height:4px;border-radius:4px;background:var(--border);overflow:hidden;margin-bottom:4px;}
+    .strength-fill{height:100%;border-radius:4px;width:0;transition:width .3s,background .3s;}
+    .strength-label{font-size:.72rem;color:var(--text-muted);}
+    .err-msg{font-size:.74rem;color:var(--error);margin-top:5px;display:none;align-items:center;gap:4px;}
+    .err-msg.show{display:flex;}
+    .err-msg svg{width:11px;height:11px;flex-shrink:0;}
+    .hint{font-size:.73rem;color:var(--text-muted);margin-top:4px;}
+
+    /* FILE DROP */
+    .file-drop{border:2px dashed var(--border);border-radius:14px;padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--off-white);position:relative;}
+    .file-drop:hover,.file-drop.dragover{border-color:var(--accent);background:rgba(59,91,219,.04);}
+    .file-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+    .file-drop svg{width:36px;height:36px;color:var(--accent);margin-bottom:8px;}
+    .file-drop p{font-size:.85rem;color:var(--text-muted);}
+    .file-drop strong{color:var(--accent);}
+    .file-name{margin-top:8px;font-size:.78rem;color:var(--navy);font-weight:500;display:none;}
+
+    /* CHECK CHIPS */
+    .check-group{display:flex;flex-wrap:wrap;gap:10px;}
+    .check-chip{display:flex;align-items:center;gap:7px;padding:8px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-size:.83rem;color:var(--text-muted);transition:all .2s;user-select:none;}
+    .check-chip input{display:none;}
+    .check-chip:hover{border-color:var(--accent);color:var(--accent);}
+    .check-chip.selected{border-color:var(--accent);background:var(--accent-glow);color:var(--accent);font-weight:600;}
+
+    /* AVATAR */
+    .avatar-upload{display:flex;flex-direction:column;align-items:center;gap:10px;}
+    .avatar-circle{width:88px;height:88px;border-radius:50%;border:2.5px dashed var(--border);background:var(--off-white);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative;transition:border-color .2s;}
+    .avatar-circle:hover{border-color:var(--accent);}
+    .avatar-circle img{width:100%;height:100%;object-fit:cover;display:none;}
+    .avatar-circle svg{width:28px;height:28px;color:#b0bac9;}
+    .avatar-circle input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+    .avatar-hint{font-size:.74rem;color:var(--text-muted);text-align:center;}
+    .mt16{margin-top:16px;} .mt24{margin-top:24px;}
+
+    /* NAV BUTTONS */
+    .form-nav{display:flex;align-items:center;justify-content:space-between;margin-top:36px;padding-top:24px;border-top:1px solid var(--border);gap:12px;}
+    .btn-back{display:flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--border);border-radius:12px;padding:0 22px;height:48px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--text-muted);cursor:pointer;transition:all .2s;}
+    .btn-back:hover{border-color:var(--navy);color:var(--navy);}
+    .btn-back svg{width:15px;height:15px;}
+    .btn-next,.btn-submit{display:flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--accent) 0%,var(--navy-light) 100%);border:none;border-radius:12px;padding:0 28px;height:48px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;color:#fff;cursor:pointer;box-shadow:0 4px 16px rgba(59,91,219,.3);transition:opacity .2s,transform .15s,box-shadow .2s;}
+    .btn-next:hover,.btn-submit:hover{opacity:.92;transform:translateY(-1px);box-shadow:0 8px 24px rgba(59,91,219,.4);}
+    .btn-next svg,.btn-submit svg{width:15px;height:15px;}
+    .step-hint{font-size:.78rem;color:var(--text-muted);}
+
+    /* TERMS */
+    .terms-box{background:var(--off-white);border:1px solid var(--border);border-radius:14px;padding:18px 20px;}
+    .terms-label{display:flex;gap:12px;align-items:flex-start;cursor:pointer;}
+    .cb-box{width:20px;height:20px;border:1.5px solid var(--border);border-radius:5px;background:var(--white);display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;margin-top:2px;}
+    .cb-box svg{width:11px;height:11px;color:#fff;opacity:0;transition:opacity .15s;}
+    .cb-box.checked{background:var(--accent);border-color:var(--accent);}
+    .cb-box.checked svg{opacity:1;}
+    .terms-text{font-size:.85rem;color:var(--text-muted);line-height:1.55;}
+    .terms-text a{color:var(--accent);font-weight:600;text-decoration:none;}
+
+    /* SUCCESS */
+    .success-screen{display:none;text-align:center;padding:48px 40px;}
+    .success-screen.active{display:block;animation:fadeIn .4s ease;}
+    .success-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--navy-light));display:flex;align-items:center;justify-content:center;margin:0 auto 24px;box-shadow:0 8px 32px rgba(59,91,219,.3);}
+    .success-icon svg{width:36px;height:36px;color:#fff;}
+    .success-screen h2{font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--navy);margin-bottom:10px;}
+    .success-screen p{font-size:.92rem;color:var(--text-muted);max-width:380px;margin:0 auto 28px;line-height:1.65;}
+    .success-pills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:32px;}
+    .success-pill{background:var(--off-white);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-size:.8rem;color:var(--navy-mid);font-weight:500;}
+    .btn-dashboard{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent),var(--navy-light));color:#fff;border:none;border-radius:14px;padding:0 32px;height:52px;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;text-decoration:none;box-shadow:0 6px 20px rgba(59,91,219,.35);}
+
+    /* RESPONSIVE */
+    @media(max-width:700px){
+      .form-header{padding:28px 24px 24px;} .form-header h1{font-size:1.4rem;}
+      .step-bar{padding:20px 24px 0;}
+      .form-body{padding:24px 24px 32px;}
+      .grid-2{grid-template-columns:1fr;} .span-2{grid-column:span 1;}
+      .topbar{flex-direction:column;gap:8px;text-align:center;}
+    }
+    @media(max-width:420px){
+      .form-header,.form-body{padding-left:16px;padding-right:16px;}
+      .step-bar{padding-left:10px;padding-right:10px;}
+      .step-label{display:none;}
+      .step-item{min-width:50px;}
+    }
+  </style>
+<script src="auth.js"></script>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div id="apiBanner" style="display:none;position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:999;background:#ef4444;color:#fff;padding:12px 22px;border-radius:12px;font-size:.85rem;font-weight:600;box-shadow:0 8px 24px rgba(239,68,68,.3);max-width:90vw;text-align:center;"></div>
+<div class="topbar">
+  <div class="topbar-logo">
+    <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg">
+      <defs><mask id="tg" maskUnits="userSpaceOnUse"><rect x="0" y="0" width="680" height="300" fill="white"/><rect x="202" y="146" width="276" height="66" fill="black" rx="2"/></mask></defs>
+      <circle cx="340" cy="95" r="62" fill="none" stroke="#1a2744" stroke-width="1.5" stroke-dasharray="4 5" opacity="0.3"/>
+      <circle cx="388" cy="50" r="7" fill="#f472b6"/>
+      <circle cx="292" cy="140" r="4.5" fill="#1a2744" opacity="0.45"/>
+      <circle cx="340" cy="95" r="46" fill="#1a2744"/>
+      <path d="M318 88 Q329 84 340 86 L340 108 Q329 106 318 110 Z" fill="#fff" opacity="0.95"/>
+      <path d="M340 86 Q351 84 362 88 L362 110 Q351 106 340 108 Z" fill="#fff" opacity="0.75"/>
+      <line x1="340" y1="86" x2="340" y2="110" stroke="#3b5bdb" stroke-width="1.5"/>
+      <path d="M316 110 Q328 107 340 109 Q352 107 364 110 L364 114 Q352 111 340 113 Q328 111 316 114 Z" fill="#93c5fd"/>
+      <text x="340" y="198" text-anchor="middle" font-family="Georgia,serif" font-size="54" font-weight="700"><tspan fill="#3b5bdb">Edu</tspan><tspan fill="#f472b6">Nova</tspan></text>
+      <text x="340" y="234" text-anchor="middle" font-family="Helvetica Neue,Arial,sans-serif" font-size="12" fill="#64748b">LEARN BEYOND LIMITS</text>
+    </svg>
+  </div>
+  <div class="topbar-login">Already registered? <a href="login.html">Sign in →</a></div>
+</div>
+
+<!-- MAIN CARD -->
+<div class="wrapper">
+  <!-- HEADER -->
+  <div class="form-header">
+    <div class="header-dots"></div>
+    <div class="header-content">
+      <div class="header-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        Lecturer Portal
+      </div>
+      <h1>Join as a Lecturer</h1>
+      <p>Share your expertise with thousands of eager learners across the globe. Set up your educator profile in 4 simple steps.</p>
+    </div>
+  </div>
+
+  <!-- STEP BAR -->
+  <div class="step-bar" id="stepBar">
+    <div class="step-item active" data-step="1">
+      <div class="step-circle"><span class="step-num">1</span></div>
+      <div class="step-label">Personal Info</div>
+    </div>
+    <div class="step-item" data-step="2">
+      <div class="step-circle"><span class="step-num">2</span></div>
+      <div class="step-label">Academic</div>
+    </div>
+    <div class="step-item" data-step="3">
+      <div class="step-circle"><span class="step-num">3</span></div>
+      <div class="step-label">Expertise</div>
+    </div>
+    <div class="step-item" data-step="4">
+      <div class="step-circle"><span class="step-num">4</span></div>
+      <div class="step-label">Security</div>
+    </div>
+  </div>
+
+  <!-- FORM BODY -->
+  <div class="form-body">
+    <form id="regForm" novalidate>
+
+      <!-- STEP 1: PERSONAL -->
+      <div class="step-panel active" id="panel1">
+        <div class="section-label">Personal Information</div>
+        <div style="display:flex;justify-content:center;margin-bottom:28px;">
+          <div class="avatar-upload">
+            <div class="avatar-circle" title="Upload photo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+              <img id="avatarPreview" alt=""/>
+              <input type="file" id="avatarFile" accept="image/*"/>
+            </div>
+            <div class="avatar-hint">Upload photo<br/><span style="color:var(--text-muted)">JPG/PNG · max 2MB</span></div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>First Name <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="text" id="firstName" placeholder="e.g. James"/>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
+            <div class="err-msg" id="firstNameErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> First name is required.</div>
+          </div>
+          <div class="field">
+            <label>Last Name <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="text" id="lastName" placeholder="e.g. Osei"/>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
+            <div class="err-msg" id="lastNameErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Last name is required.</div>
+          </div>
+          <div class="field">
+            <label>Email Address <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="email" id="email" placeholder="james@university.edu"/>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m2 7 10 7 10-7"/></svg>
+            </div>
+            <div class="err-msg" id="emailErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Enter a valid email address.</div>
+          </div>
+          <div class="field">
+            <label>Phone Number <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="tel" id="phone" placeholder="+237 6XX XXX XXX"/>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 4 4.18 2 2 0 0 1 6.09 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L10.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 24 16.92z"/></svg>
+            </div>
+            <div class="err-msg" id="phoneErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Enter a valid phone number.</div>
+          </div>
+          <div class="field">
+            <label>Date of Birth</label>
+            <div class="input-wrap no-icon"><input type="date" id="dob"/></div>
+          </div>
+          <div class="field">
+            <label>Gender</label>
+            <div class="input-wrap">
+              <select id="gender">
+                <option value="">Select gender</option>
+                <option>Male</option><option>Female</option>
+                <option>Non-binary</option><option>Prefer not to say</option>
+              </select>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+            </div>
+          </div>
+          <div class="field">
+            <label>Country <span class="req">*</span></label>
+            <div class="input-wrap">
+              <select id="country">
+                <option value="">Select country</option>
+                <option>Cameroon</option><option>Nigeria</option><option>Ghana</option>
+                <option>South Africa</option><option>Kenya</option><option>France</option>
+                <option>United Kingdom</option><option>United States</option>
+                <option>Canada</option><option>Other</option>
+              </select>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
+            <div class="err-msg" id="countryErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Please select your country.</div>
+          </div>
+          <div class="field">
+            <label>City / Location</label>
+            <div class="input-wrap">
+              <input type="text" id="city" placeholder="e.g. Yaoundé"/>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="form-nav">
+          <span class="step-hint">Step 1 of 4</span>
+          <button type="button" class="btn-next" onclick="goNext(1)">Next — Academic Info <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+
+      <!-- STEP 2: ACADEMIC -->
+      <div class="step-panel" id="panel2">
+        <div class="section-label">Academic Background</div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Academic Title <span class="req">*</span></label>
+            <div class="input-wrap">
+              <select id="title">
+                <option value="">Select title</option>
+                <option>Prof.</option><option>Dr.</option><option>Assoc. Prof.</option>
+                <option>Asst. Prof.</option><option>Lecturer</option>
+                <option>Mr.</option><option>Mrs.</option><option>Ms.</option>
+              </select>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <div class="err-msg" id="titleErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Please select a title.</div>
+          </div>
+          <div class="field">
+            <label>Highest Qualification <span class="req">*</span></label>
+            <div class="input-wrap">
+              <select id="qualification">
+                <option value="">Select qualification</option>
+                <option>Bachelor's Degree</option><option>Master's Degree</option>
+                <option>PhD / Doctorate</option><option>Post-Doctorate</option>
+                <option>Professional Certification</option><option>Other</option>
+              </select>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            </div>
+            <div class="err-msg" id="qualErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Please select your qualification.</div>
+          </div>
+          <div class="field">
+            <label>Institution / University <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="text" id="institution" placeholder="e.g. University of Yaoundé I"/>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg>
+            </div>
+            <div class="err-msg" id="institutionErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Institution name is required.</div>
+          </div>
+          <div class="field">
+            <label>Department / Faculty</label>
+            <div class="input-wrap">
+              <input type="text" id="department" placeholder="e.g. Faculty of Science"/>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+          </div>
+          <div class="field">
+            <label>Years of Teaching Experience <span class="req">*</span></label>
+            <div class="input-wrap">
+              <select id="experience">
+                <option value="">Select range</option>
+                <option>Less than 1 year</option><option>1 – 3 years</option>
+                <option>4 – 7 years</option><option>8 – 15 years</option>
+                <option>15+ years</option>
+              </select>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div class="err-msg" id="expErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Please select your experience range.</div>
+          </div>
+          <div class="field">
+            <label>LinkedIn / Portfolio URL</label>
+            <div class="input-wrap">
+              <input type="url" id="linkedin" placeholder="https://linkedin.com/in/…"/>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </div>
+          </div>
+          <div class="field span-2">
+            <label>Short Bio <span class="req">*</span></label>
+            <div class="input-wrap no-icon">
+              <textarea id="bio" placeholder="Describe your academic background, achievements, and teaching philosophy…" maxlength="400"></textarea>
+            </div>
+            <div class="char-count"><span id="bioCount">0</span>/400</div>
+            <div class="err-msg" id="bioErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Please write a short bio (min 30 characters).</div>
+          </div>
+        </div>
+        <div class="mt24 section-label">Supporting Documents</div>
+        <div class="grid-2">
+          <div class="field">
+            <label>CV / Résumé <span class="req">*</span></label>
+            <div class="file-drop" id="cvDrop">
+              <input type="file" id="cvFile" accept=".pdf,.doc,.docx"/>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+              <p><strong>Click to upload</strong> or drag & drop</p>
+              <p style="font-size:.76rem;margin-top:4px">PDF, DOC, DOCX · max 5MB</p>
+              <div class="file-name" id="cvName"></div>
+            </div>
+            <div class="err-msg" id="cvErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Please upload your CV.</div>
+          </div>
+          <div class="field">
+            <label>Degree Certificate</label>
+            <div class="file-drop" id="certDrop">
+              <input type="file" id="certFile" accept=".pdf,.jpg,.jpeg,.png"/>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
+              <p><strong>Click to upload</strong> or drag & drop</p>
+              <p style="font-size:.76rem;margin-top:4px">PDF, JPG, PNG · max 5MB</p>
+              <div class="file-name" id="certName"></div>
+            </div>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button type="button" class="btn-back" onclick="goBack(2)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button>
+          <span class="step-hint">Step 2 of 4</span>
+          <button type="button" class="btn-next" onclick="goNext(2)">Next — Expertise <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+
+      <!-- STEP 3: EXPERTISE -->
+      <div class="step-panel" id="panel3">
+        <div class="section-label">Teaching Expertise</div>
+        <div class="field">
+          <label>Primary Subject Area <span class="req">*</span></label>
+          <div class="input-wrap">
+            <select id="subjectArea">
+              <option value="">Select primary subject</option>
+              <option>Computer Science & IT</option><option>Mathematics & Statistics</option>
+              <option>Natural Sciences</option><option>Engineering</option>
+              <option>Business & Management</option><option>Social Sciences</option>
+              <option>Arts & Humanities</option><option>Medicine & Health</option>
+              <option>Law</option><option>Education</option>
+              <option>Languages</option><option>Other</option>
+            </select>
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div class="err-msg" id="subjectErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Please select a primary subject.</div>
+        </div>
+        <div class="mt16 field">
+          <label>Teaching Mode <span class="req">*</span></label>
+          <div class="check-group" id="teachingMode">
+            <label class="check-chip"><input type="checkbox" value="live"/> 🎥 Live Sessions</label>
+            <label class="check-chip"><input type="checkbox" value="recorded"/> 📹 Recorded Courses</label>
+            <label class="check-chip"><input type="checkbox" value="text"/> 📝 Text-based</label>
+            <label class="check-chip"><input type="checkbox" value="mentoring"/> 🤝 1-on-1 Mentoring</label>
+            <label class="check-chip"><input type="checkbox" value="workshop"/> 🏗 Workshops</label>
+          </div>
+          <div class="err-msg" id="modeErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Select at least one teaching mode.</div>
+        </div>
+        <div class="mt16 field">
+          <label>Teaching Language(s) <span class="req">*</span></label>
+          <div class="check-group" id="languages">
+            <label class="check-chip"><input type="checkbox" value="english"/> 🇬🇧 English</label>
+            <label class="check-chip"><input type="checkbox" value="french"/> 🇫🇷 French</label>
+            <label class="check-chip"><input type="checkbox" value="arabic"/> 🇸🇦 Arabic</label>
+            <label class="check-chip"><input type="checkbox" value="spanish"/> 🇪🇸 Spanish</label>
+            <label class="check-chip"><input type="checkbox" value="portuguese"/> 🇧🇷 Portuguese</label>
+            <label class="check-chip"><input type="checkbox" value="other"/> Other</label>
+          </div>
+          <div class="err-msg" id="langErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Select at least one language.</div>
+        </div>
+        <div class="mt16 field">
+          <label>Availability per Week <span class="req">*</span></label>
+          <div class="input-wrap" style="max-width:300px">
+            <select id="availability">
+              <option value="">Select availability</option>
+              <option>1 – 5 hours/week</option><option>5 – 10 hours/week</option>
+              <option>10 – 20 hours/week</option><option>Full-time (20+ hrs)</option>
+            </select>
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </div>
+          <div class="err-msg" id="availErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Please select your availability.</div>
+        </div>
+        <div class="mt16 field">
+          <label>Proposed Course Title <span class="req">*</span></label>
+          <div class="input-wrap">
+            <input type="text" id="courseTitle" placeholder="e.g. Introduction to Machine Learning with Python"/>
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <div class="err-msg" id="courseTitleErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Please enter a proposed course title.</div>
+        </div>
+        <div class="mt16 field">
+          <label>Course Description</label>
+          <div class="input-wrap no-icon">
+            <textarea id="courseDesc" placeholder="Briefly describe what your course will cover, who it's for, and the key learning outcomes…" maxlength="600"></textarea>
+          </div>
+          <div class="char-count"><span id="descCount">0</span>/600</div>
+        </div>
+        <div class="form-nav">
+          <button type="button" class="btn-back" onclick="goBack(3)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button>
+          <span class="step-hint">Step 3 of 4</span>
+          <button type="button" class="btn-next" onclick="goNext(3)">Next — Security <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+
+      <!-- STEP 4: SECURITY -->
+      <div class="step-panel" id="panel4">
+        <div class="section-label">Account Security</div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Username <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="text" id="username" placeholder="e.g. dr.james_osei"/>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            </div>
+            <div class="hint">Lowercase letters, numbers and underscores only (3–20 chars).</div>
+            <div class="err-msg" id="usernameErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Username must be 3–20 chars, letters/numbers/underscore.</div>
+          </div>
+          <div class="field"></div>
+          <div class="field">
+            <label>Password <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="password" id="newPass" placeholder="Create a strong password"/>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <button type="button" class="toggle-pass" onclick="togglePwd('newPass','eyeNew')">
+                <svg id="eyeNew" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="pass-strength">
+              <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+              <div class="strength-label" id="strengthLabel">Enter a password</div>
+            </div>
+            <div class="err-msg" id="newPassErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Password must be at least 8 characters.</div>
+          </div>
+          <div class="field">
+            <label>Confirm Password <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="password" id="confirmPass" placeholder="Repeat your password"/>
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <button type="button" class="toggle-pass" onclick="togglePwd('confirmPass','eyeConf')">
+                <svg id="eyeConf" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <div class="err-msg" id="confirmPassErr"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> Passwords do not match.</div>
+          </div>
+        </div>
+        <div class="mt24 terms-box">
+          <div class="terms-label" id="termsLabel">
+            <div class="cb-box" id="termsCb">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="1.5 6 4.5 9 10.5 3"/></svg>
+            </div>
+            <div class="terms-text">
+              I agree to EduNova's <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I confirm that all information provided is accurate and I am authorized to offer courses on this platform.
+            </div>
+          </div>
+          <div class="err-msg" id="termsErr" style="margin-top:10px"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> You must agree to the terms to continue.</div>
+        </div>
+        <div class="form-nav">
+          <button type="button" class="btn-back" onclick="goBack(4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button>
+          <span class="step-hint">Step 4 of 4</span>
+          <button type="submit" class="btn-submit" id="submitBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg>
+            Submit Application
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- SUCCESS -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h2>Welcome to EduNova, <span class="success-name"></span>!</h2>
+      <p>Your lecturer account has been created. You can now log in and access your dashboard to start building your courses.</p>
+      <div class="success-pills">
+        <span class="success-pill">✉️ Confirmation email sent</span>
+        <span class="success-pill">🎓 Account ready</span>
+        <span class="success-pill">🚀 Start teaching today</span>
+      </div>
+      <a href="Dashboard.html" class="btn-dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:16px;height:16px"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Go to Dashboard
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── STEP NAVIGATION ──
+  let termsChecked = false;
+
+  function setStep(n) {
+    document.querySelectorAll('.step-panel').forEach((p,i) => p.classList.toggle('active', i+1===n));
+    document.querySelectorAll('.step-item').forEach((s,i) => {
+      s.classList.remove('active','done');
+      if(i+1 < n) s.classList.add('done');
+      if(i+1 === n) s.classList.add('active');
+    });
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function setValid(id, ok) {
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.classList.toggle('err',!ok); el.classList.toggle('ok',ok);
+  }
+  function showErr(id, show) {
+    const el = document.getElementById(id);
+    if(el) el.classList.toggle('show', show);
+  }
+  function val(id) { const el=document.getElementById(id); return el?el.value.trim():''; }
+
+  function validateStep1() {
+    let ok=true;
+    const emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!val('firstName')){setValid('firstName',false);showErr('firstNameErr',true);ok=false;}
+    else{setValid('firstName',true);showErr('firstNameErr',false);}
+    if(!val('lastName')){setValid('lastName',false);showErr('lastNameErr',true);ok=false;}
+    else{setValid('lastName',true);showErr('lastNameErr',false);}
+    if(!emailRe.test(val('email'))){setValid('email',false);showErr('emailErr',true);ok=false;}
+    else{setValid('email',true);showErr('emailErr',false);}
+    if(val('phone').replace(/\s/g,'').length<7){setValid('phone',false);showErr('phoneErr',true);ok=false;}
+    else{setValid('phone',true);showErr('phoneErr',false);}
+    if(!val('country')){setValid('country',false);showErr('countryErr',true);ok=false;}
+    else{setValid('country',true);showErr('countryErr',false);}
+    return ok;
+  }
+  function validateStep2() {
+    let ok=true;
+    if(!val('title')){setValid('title',false);showErr('titleErr',true);ok=false;}else{setValid('title',true);showErr('titleErr',false);}
+    if(!val('qualification')){setValid('qualification',false);showErr('qualErr',true);ok=false;}else{setValid('qualification',true);showErr('qualErr',false);}
+    if(!val('institution')){setValid('institution',false);showErr('institutionErr',true);ok=false;}else{setValid('institution',true);showErr('institutionErr',false);}
+    if(!val('experience')){setValid('experience',false);showErr('expErr',true);ok=false;}else{setValid('experience',true);showErr('expErr',false);}
+    if(val('bio').length<30){setValid('bio',false);showErr('bioErr',true);ok=false;}else{setValid('bio',true);showErr('bioErr',false);}
+    const cv=document.getElementById('cvFile');
+    if(!cv.files.length){showErr('cvErr',true);ok=false;}else{showErr('cvErr',false);}
+    return ok;
+  }
+  function validateStep3() {
+    let ok=true;
+    if(!val('subjectArea')){setValid('subjectArea',false);showErr('subjectErr',true);ok=false;}else{setValid('subjectArea',true);showErr('subjectErr',false);}
+    const modes=document.querySelectorAll('#teachingMode .check-chip.selected');
+    showErr('modeErr',modes.length===0); if(modes.length===0) ok=false;
+    const langs=document.querySelectorAll('#languages .check-chip.selected');
+    showErr('langErr',langs.length===0); if(langs.length===0) ok=false;
+    if(!val('availability')){setValid('availability',false);showErr('availErr',true);ok=false;}else{setValid('availability',true);showErr('availErr',false);}
+    if(!val('courseTitle')){setValid('courseTitle',false);showErr('courseTitleErr',true);ok=false;}else{setValid('courseTitle',true);showErr('courseTitleErr',false);}
+    return ok;
+  }
+  function validateStep4() {
+    let ok=true;
+    const uRe=/^[a-z0-9_]{3,20}$/;
+    if(!uRe.test(val('username'))){setValid('username',false);showErr('usernameErr',true);ok=false;}else{setValid('username',true);showErr('usernameErr',false);}
+    if(val('newPass').length<8){setValid('newPass',false);showErr('newPassErr',true);ok=false;}else{setValid('newPass',true);showErr('newPassErr',false);}
+    if(val('confirmPass')!==val('newPass')||!val('confirmPass')){setValid('confirmPass',false);showErr('confirmPassErr',true);ok=false;}else{setValid('confirmPass',true);showErr('confirmPassErr',false);}
+    showErr('termsErr',!termsChecked); if(!termsChecked) ok=false;
+    return ok;
+  }
+
+  function goNext(step) {
+    const v=[null,validateStep1,validateStep2,validateStep3];
+    if(!v[step]()) return;
+    setStep(step+1);
+  }
+  function goBack(step) { setStep(step-1); }
+
+  // ── Redirect if already logged in ──────────────────────
+  if (isLoggedIn()) {
+    window.location.replace("Dashboard.html");
+  }
+
+  // ── API error banner ────────────────────────────────────
+  const apiBanner = document.getElementById('apiBanner');
+  function showApiError(msg) {
+    apiBanner.textContent = msg;
+    apiBanner.style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => apiBanner.style.display = 'none', 6000);
+  }
+
+  // SUBMIT
+  document.getElementById('regForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!validateStep4()) return;
+
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;animation:spin 1s linear infinite"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg> Creating Account…';
+    btn.disabled = true;
+    apiBanner.style.display = 'none';
+
+    // Collect all form fields
+    const fields = {
+      firstName:     val('firstName'),
+      lastName:      val('lastName'),
+      email:         val('email'),
+      phone:         val('phone'),
+      country:       val('country'),
+      city:          val('city'),
+      title:         val('title'),
+      qualification: val('qualification'),
+      institution:   val('institution'),
+      department:    val('department'),
+      experience:    val('experience'),
+      linkedin:      val('linkedin'),
+      bio:           val('bio'),
+      subjects:      [...document.querySelectorAll('#subjects .check-chip.selected')].map(c => c.textContent.trim()).join(', '),
+      teachingModes: [...document.querySelectorAll('#teachingModes .check-chip.selected')].map(c => c.textContent.trim()).join(', '),
+      languages:     [...document.querySelectorAll('#languages .check-chip.selected')].map(c => c.textContent.trim()).join(', '),
+      availability:  val('availability'),
+      courseTitle:   val('courseTitle'),
+      courseDesc:    val('courseDesc'),
+      username:      val('username'),
+      password:      val('newPass'),
+      // Files
+      avatar:        document.getElementById('avatarFile')?.files[0] || null,
+      cv:            document.getElementById('cvFile')?.files[0]     || null,
+      certificate:   document.getElementById('certFile')?.files[0]   || null,
+    };
+
+    const result = await apiRegister(fields);
+
+    if (result.ok) {
+      // Show success screen with real name
+      document.getElementById('regForm').style.display = 'none';
+      document.getElementById('stepBar').style.display = 'none';
+      const ss = document.getElementById('successScreen');
+      ss.classList.add('active');
+      // Update success screen name if element exists
+      const nameEl = ss.querySelector('.success-name');
+      if (nameEl) nameEl.textContent = result.user.fullName || result.user.firstName;
+    } else {
+      btn.innerHTML = 'Create My Lecturer Account <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+      btn.disabled = false;
+      showApiError(result.message || "Registration failed. Please try again.");
+    }
+  });
+
+  // PASSWORD TOGGLE
+  function togglePwd(inputId,iconId){
+    const inp=document.getElementById(inputId);
+    const ico=document.getElementById(iconId);
+    const shown=inp.type==='text';
+    inp.type=shown?'password':'text';
+    ico.innerHTML=shown
+      ?`<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`
+      :`<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+  }
+
+  // PASSWORD STRENGTH
+  document.getElementById('newPass').addEventListener('input',function(){
+    const v=this.value, fill=document.getElementById('strengthFill'), label=document.getElementById('strengthLabel');
+    let s=0;
+    if(v.length>=8) s++;
+    if(/[A-Z]/.test(v)) s++;
+    if(/[0-9]/.test(v)) s++;
+    if(/[^A-Za-z0-9]/.test(v)) s++;
+    const L=[{w:'0%',c:'transparent',t:''},{w:'25%',c:'#ef4444',t:'Weak'},{w:'50%',c:'#f59e0b',t:'Fair'},{w:'75%',c:'#3b82f6',t:'Good'},{w:'100%',c:'#22c55e',t:'Strong'}];
+    const lvl=v.length===0?0:Math.max(1,s);
+    fill.style.width=L[lvl].w; fill.style.background=L[lvl].c;
+    label.textContent=L[lvl].t||'Enter a password'; label.style.color=L[lvl].c||'var(--text-muted)';
+  });
+
+  // CHAR COUNTERS
+  document.getElementById('bio').addEventListener('input',function(){ document.getElementById('bioCount').textContent=this.value.length; });
+  document.getElementById('courseDesc').addEventListener('input',function(){ document.getElementById('descCount').textContent=this.value.length; });
+
+  // CHECK CHIPS
+  document.querySelectorAll('.check-chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      const cb=chip.querySelector('input[type=checkbox]');
+      cb.checked=!cb.checked;
+      chip.classList.toggle('selected',cb.checked);
+    });
+  });
+
+  // TERMS CHECKBOX
+  document.getElementById('termsLabel').addEventListener('click',()=>{
+    termsChecked=!termsChecked;
+    const cb=document.getElementById('termsCb');
+    cb.classList.toggle('checked',termsChecked);
+  });
+
+  // AVATAR PREVIEW
+  document.getElementById('avatarFile').addEventListener('change',function(){
+    if(this.files[0]){
+      const r=new FileReader();
+      r.onload=e=>{
+        const img=document.getElementById('avatarPreview');
+        img.src=e.target.result; img.style.display='block';
+        img.previousElementSibling.style.display='none';
+      };
+      r.readAsDataURL(this.files[0]);
+    }
+  });
+
+  // FILE DROPS
+  function setupDrop(dropId,inputId,nameId){
+    const drop=document.getElementById(dropId),input=document.getElementById(inputId),nameEl=document.getElementById(nameId);
+    input.addEventListener('change',()=>{
+      if(input.files[0]){nameEl.textContent='📎 '+input.files[0].name;nameEl.style.display='block';drop.style.borderColor='var(--success)';}
+    });
+    drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('dragover');});
+    drop.addEventListener('dragleave',()=>drop.classList.remove('dragover'));
+    drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('dragover');input.files=e.dataTransfer.files;input.dispatchEvent(new Event('change'));});
+  }
+  setupDrop('cvDrop','cvFile','cvName');
+  setupDrop('certDrop','certFile','certName');
+
+  // BLUR VALIDATION
+  ['firstName','lastName','email','phone','country'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.addEventListener('blur',()=>{ if(el.value||el.classList.contains('err')) validateStep1(); });
+  });
+</script>
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</body>
+</html>

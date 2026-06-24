@@ -1,0 +1,61 @@
+<svg width="100%" viewBox="0 0 680 300" role="img" xmlns="http://www.w3.org/2000/svg" style="">
+  <title style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">EduNova Logo Version 3</title>
+  <desc style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto">EduNova logo with a circular orbit icon wrapping an open book, warm purple and coral gradient palette, centered stacked layout and Learn Beyond Limits slogan.</desc>
+
+  <defs>
+    
+  <mask id="imagine-text-gaps-q1cf76" maskUnits="userSpaceOnUse"><rect x="0" y="0" width="680" height="300" fill="white"/><rect x="202.13125610351562" y="146.40000915527344" width="275.73748779296875" height="65.60000610351562" fill="black" rx="2"/><rect x="220.4812469482422" y="220.8000030517578" width="239.03750610351562" height="17.600000381469727" fill="black" rx="2"/><rect x="278.35626220703125" y="251.1999969482422" width="123.2874984741211" height="15.199999809265137" fill="black" rx="2"/></mask></defs>
+
+  <!-- ── CENTERED STACKED LAYOUT ── -->
+
+  <!-- Outer orbit ring -->
+  <circle cx="340" cy="95" r="62" fill="none" stroke="#6D28D9" stroke-width="1.5" stroke-dasharray="4 5" opacity="0.4" style="fill:none;stroke:rgb(109, 40, 217);color:rgb(255, 255, 255);stroke-width:1.5px;stroke-dasharray:4px, 5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.4;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Orbiting planet dot top-right -->
+  <circle cx="388" cy="50" r="7" fill="#EC4899" style="fill:rgb(236, 72, 153);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <!-- Orbiting dot bottom-left -->
+  <circle cx="292" cy="140" r="4.5" fill="#6D28D9" opacity="0.6" style="fill:rgb(109, 40, 217);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.6;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <!-- Orbiting dot top-left -->
+  <circle cx="296" cy="52" r="3" fill="#A78BFA" opacity="0.7" style="fill:rgb(167, 139, 250);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.7;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Inner filled circle background -->
+  <circle cx="340" cy="95" r="46" fill="#6D28D9" style="fill:rgb(109, 40, 217);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Open book icon inside circle -->
+  <!-- Left page -->
+  <path d="M318 88 Q329 84 340 86 L340 108 Q329 106 318 110 Z" fill="#ffffff" opacity="0.95" style="fill:rgb(255, 255, 255);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.95;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <!-- Right page -->
+  <path d="M340 86 Q351 84 362 88 L362 110 Q351 106 340 108 Z" fill="#ffffff" opacity="0.80" style="fill:rgb(255, 255, 255);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.8;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <!-- Spine -->
+  <line x1="340" y1="86" x2="340" y2="110" stroke="#6D28D9" stroke-width="1.5" style="fill:rgb(0, 0, 0);stroke:rgb(109, 40, 217);color:rgb(255, 255, 255);stroke-width:1.5px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <!-- Book base -->
+  <path d="M316 110 Q328 107 340 109 Q352 107 364 110 L364 114 Q352 111 340 113 Q328 111 316 114 Z" fill="#C4B5FD" style="fill:rgb(196, 181, 253);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <!-- Lines on left page -->
+  <line x1="322" y1="93" x2="337" y2="92" stroke="#6D28D9" stroke-width="0.9" opacity="0.5" style="fill:rgb(0, 0, 0);stroke:rgb(109, 40, 217);color:rgb(255, 255, 255);stroke-width:0.9px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <line x1="322" y1="98" x2="337" y2="97" stroke="#6D28D9" stroke-width="0.9" opacity="0.5" style="fill:rgb(0, 0, 0);stroke:rgb(109, 40, 217);color:rgb(255, 255, 255);stroke-width:0.9px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <line x1="322" y1="103" x2="337" y2="102" stroke="#6D28D9" stroke-width="0.9" opacity="0.5" style="fill:rgb(0, 0, 0);stroke:rgb(109, 40, 217);color:rgb(255, 255, 255);stroke-width:0.9px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.5;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <!-- Lines on right page -->
+  <line x1="343" y1="92" x2="358" y2="93" stroke="#6D28D9" stroke-width="0.9" opacity="0.35" style="fill:rgb(0, 0, 0);stroke:rgb(109, 40, 217);color:rgb(255, 255, 255);stroke-width:0.9px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <line x1="343" y1="97" x2="358" y2="98" stroke="#6D28D9" stroke-width="0.9" opacity="0.35" style="fill:rgb(0, 0, 0);stroke:rgb(109, 40, 217);color:rgb(255, 255, 255);stroke-width:0.9px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <line x1="343" y1="102" x2="358" y2="103" stroke="#6D28D9" stroke-width="0.9" opacity="0.35" style="fill:rgb(0, 0, 0);stroke:rgb(109, 40, 217);color:rgb(255, 255, 255);stroke-width:0.9px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.35;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Light beam / shine from top of circle -->
+  <polygon points="340,49 333,68 347,68" fill="#ffffff" opacity="0.12" style="fill:rgb(255, 255, 255);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.12;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- ── WORDMARK centered ── -->
+  <text x="340" y="198" text-anchor="middle" style="fill:rgb(0, 0, 0);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:54px;font-weight:700;text-anchor:middle;dominant-baseline:auto">
+    <tspan style="fill:rgb(167, 139, 250);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:54px;font-weight:700;text-anchor:middle;dominant-baseline:auto">Edu</tspan><tspan style="fill:rgb(244, 114, 182);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:Georgia, &quot;Times New Roman&quot;, serif;font-size:54px;font-weight:700;text-anchor:middle;dominant-baseline:auto">Nova</tspan>
+  </text>
+
+  <!-- Decorative line pair -->
+  <line x1="200" y1="212" x2="305" y2="212" stroke="#6D28D9" stroke-width="0.8" opacity="0.25" mask="url(#imagine-text-gaps-q1cf76)" style="fill:rgb(0, 0, 0);stroke:rgb(109, 40, 217);color:rgb(255, 255, 255);stroke-width:0.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.25;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <line x1="375" y1="212" x2="480" y2="212" stroke="#EC4899" stroke-width="0.8" opacity="0.25" mask="url(#imagine-text-gaps-q1cf76)" style="fill:rgb(0, 0, 0);stroke:rgb(236, 72, 153);color:rgb(255, 255, 255);stroke-width:0.8px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.25;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+
+  <!-- Slogan -->
+  <text x="340" y="234" text-anchor="middle" style="fill:rgb(107, 114, 128);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:1;font-family:&quot;Helvetica Neue&quot;, Arial, sans-serif;font-size:12px;font-weight:400;text-anchor:middle;dominant-baseline:auto">LEARN BEYOND LIMITS</text>
+
+  <!-- Tag pill -->
+  <rect x="293" y="248" width="94" height="20" rx="10" fill="#6D28D9" opacity="0.12" style="fill:rgb(109, 40, 217);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.12;font-family:&quot;Anthropic Sans&quot;, -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, sans-serif;font-size:16px;font-weight:400;text-anchor:start;dominant-baseline:auto"/>
+  <text x="340" y="262" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="10" font-weight="600" fill="#6D28D9" letter-spacing="1.5" opacity="0.85" style="fill:rgb(109, 40, 217);stroke:none;color:rgb(255, 255, 255);stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;opacity:0.85;font-family:&quot;Helvetica Neue&quot;, Arial, sans-serif;font-size:10px;font-weight:600;text-anchor:middle;dominant-baseline:auto">ONLINE LEARNING</text>
+
+</svg>

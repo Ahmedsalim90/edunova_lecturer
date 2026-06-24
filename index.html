@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduNova — Admin Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <style>
+        :root {
+            --navy: #0B1F4B;
+            --navy-mid: #122460;
+            --navy-light: #1A3275;
+            --accent: #1E56C8;
+            --accent2: #EC4899;
+            --accent3: #38BDF8;
+            --bg: #F0F4FB;
+            --border: #DDE4F0;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+        }
+
+        /* ── ANIMATED BACKGROUND ── */
+        .bg-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .bg-canvas::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 15% 20%, rgba(30, 86, 200, .18) 0%, transparent 65%),
+                radial-gradient(ellipse 60% 50% at 85% 80%, rgba(56, 189, 248, .12) 0%, transparent 60%),
+                var(--bg);
+        }
+
+        /* Floating orbs — navy/accent palette */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+        }
+        .orb-1 {
+            width: clamp(280px, 45vw, 520px);
+            height: clamp(280px, 45vw, 520px);
+            background: radial-gradient(circle, rgba(30, 86, 200, .22) 0%, rgba(30, 86, 200, .02) 70%);
+            top: -18%;
+            left: -14%;
+            animation: drift1 18s ease-in-out infinite;
+        }
+        .orb-2 {
+            width: clamp(200px, 35vw, 400px);
+            height: clamp(200px, 35vw, 400px);
+            background: radial-gradient(circle, rgba(56, 189, 248, .18) 0%, rgba(56, 189, 248, .02) 70%);
+            bottom: 5%;
+            right: -10%;
+            animation: drift2 22s ease-in-out infinite;
+        }
+        .orb-3 {
+            width: clamp(120px, 18vw, 220px);
+            height: clamp(120px, 18vw, 220px);
+            background: radial-gradient(circle, rgba(236, 72, 153, .14) 0%, rgba(236, 72, 153, .01) 70%);
+            top: 60%;
+            left: 8%;
+            animation: drift3 26s ease-in-out infinite;
+        }
+
+        /* Subtle grid overlay */
+        .bg-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(30, 86, 200, .04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(30, 86, 200, .04) 1px, transparent 1px);
+            background-size: 48px 48px;
+        }
+
+        @keyframes drift1 { 0%,100%{ transform:translate(0,0) } 50%{ transform:translate(40px,60px) } }
+        @keyframes drift2 { 0%,100%{ transform:translate(0,0) } 50%{ transform:translate(-60px,-40px) } }
+        @keyframes drift3 { 0%,100%{ transform:translate(0,0) } 50%{ transform:translate(30px,-50px) } }
+
+        /* ── PAGE WRAPPER ── */
+        .page {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: clamp(14px, 2.5vh, 24px);
+            padding: 24px;
+        }
+
+        /* ── LOGO ── */
+        .logo-wrap {
+            width: clamp(220px, 55vw, 320px);
+            max-width: 90vw;
+            animation: floatLogo 3s ease-in-out infinite, fadeSlideUp .6s ease both;
+        }
+        @keyframes floatLogo {
+            0%, 100% { transform: translateY(0); }
+            50%       { transform: translateY(-12px); }
+        }
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── TAGLINE ── */
+        .tagline {
+            font-size: clamp(.7rem, 2vw, .82rem);
+            color: var(--navy);
+            font-weight: 600;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn .5s ease .4s forwards;
+        }
+
+        /* ── PROGRESS BAR ── */
+        .progress-bar {
+            width: clamp(140px, 40vw, 200px);
+            height: 4px;
+            background: rgba(30, 86, 200, .12);
+            border-radius: 99px;
+            overflow: hidden;
+            animation: fadeIn .5s ease .3s both;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--navy) 0%, var(--accent) 50%, var(--accent3) 100%);
+            border-radius: 99px;
+            animation: loading 2.8s ease-in-out forwards;
+        }
+        @keyframes loading {
+            0%   { width: 0% }
+            70%  { width: 85% }
+            100% { width: 100% }
+        }
+
+        /* ── LOADING TEXT ── */
+        .loading-text {
+            font-size: clamp(.72rem, 2vw, .8rem);
+            color: #6B7A99;
+            font-weight: 500;
+            animation: fadeIn .5s ease .5s both;
+        }
+
+        /* ── CORNER ACCENTS ── */
+        .corner {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            opacity: .18;
+            pointer-events: none;
+        }
+        .corner-tl { top: 20px; left: 20px; border-top: 2px solid var(--navy); border-left: 2px solid var(--navy); border-radius: 4px 0 0 0; }
+        .corner-br { bottom: 20px; right: 20px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); border-radius: 0 0 4px 0; }
+
+        @keyframes fadeIn { from{ opacity:0 } to{ opacity:1 } }
+
+        /* ── RESPONSIVE TWEAKS ── */
+        @media (max-width: 480px) {
+            .orb-1 { width: 260px; height: 260px; }
+            .orb-2 { width: 180px; height: 180px; }
+            .orb-3 { display: none; }
+            .corner { width: 40px; height: 40px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-canvas">
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<!-- Corner accents -->
+<div class="corner corner-tl"></div>
+<div class="corner corner-br"></div>
+
+<!-- Main content -->
+<div class="page">
+
+    <div class="logo-wrap">
+        <!-- EduNova SVG logo (edunova_logo_v3) -->
+        <svg viewBox="0 0 680 300" xmlns="http://www.w3.org/2000/svg" width="100%" role="img" aria-label="EduNova logo">
+            <defs>
+                <mask id="txt-gaps" maskUnits="userSpaceOnUse">
+                    <rect x="0" y="0" width="680" height="300" fill="white"/>
+                    <rect x="202" y="146" width="276" height="66" fill="black" rx="2"/>
+                    <rect x="220" y="221" width="239" height="18" fill="black" rx="2"/>
+                    <rect x="278" y="251" width="124" height="16" fill="black" rx="2"/>
+                </mask>
+            </defs>
+
+            <!-- Outer orbit ring -->
+            <circle cx="340" cy="95" r="62" fill="none" stroke="#0B1F4B" stroke-width="1.5" stroke-dasharray="4 5" opacity="0.35"/>
+
+            <!-- Orbiting dots -->
+            <circle cx="388" cy="50" r="7"   fill="#EC4899"/>
+            <circle cx="292" cy="140" r="4.5" fill="#1E56C8" opacity="0.7"/>
+            <circle cx="296" cy="52"  r="3"   fill="#38BDF8"  opacity="0.8"/>
+
+            <!-- Main circle -->
+            <circle cx="340" cy="95" r="46" fill="#0B1F4B"/>
+
+            <!-- Accent ring inside -->
+            <circle cx="340" cy="95" r="46" fill="none" stroke="#1E56C8" stroke-width="1" opacity="0.4"/>
+
+            <!-- Open book — left page -->
+            <path d="M318 88 Q329 84 340 86 L340 108 Q329 106 318 110 Z" fill="#ffffff" opacity="0.95"/>
+            <!-- Open book — right page -->
+            <path d="M340 86 Q351 84 362 88 L362 110 Q351 106 340 108 Z" fill="#ffffff" opacity="0.80"/>
+            <!-- Spine -->
+            <line x1="340" y1="86" x2="340" y2="110" stroke="#1E56C8" stroke-width="1.5"/>
+            <!-- Book base -->
+            <path d="M316 110 Q328 107 340 109 Q352 107 364 110 L364 114 Q352 111 340 113 Q328 111 316 114 Z" fill="#38BDF8" opacity="0.6"/>
+
+            <!-- Lines on left page -->
+            <line x1="322" y1="93"  x2="337" y2="92"  stroke="#0B1F4B" stroke-width="0.9" opacity="0.4"/>
+            <line x1="322" y1="98"  x2="337" y2="97"  stroke="#0B1F4B" stroke-width="0.9" opacity="0.4"/>
+            <line x1="322" y1="103" x2="337" y2="102" stroke="#0B1F4B" stroke-width="0.9" opacity="0.4"/>
+            <!-- Lines on right page -->
+            <line x1="343" y1="92"  x2="358" y2="93"  stroke="#0B1F4B" stroke-width="0.9" opacity="0.28"/>
+            <line x1="343" y1="97"  x2="358" y2="98"  stroke="#0B1F4B" stroke-width="0.9" opacity="0.28"/>
+            <line x1="343" y1="102" x2="358" y2="103" stroke="#0B1F4B" stroke-width="0.9" opacity="0.28"/>
+
+            <!-- Shine -->
+            <polygon points="340,49 333,68 347,68" fill="#ffffff" opacity="0.10"/>
+
+            <!-- Wordmark -->
+            <text x="340" y="198" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-size="54" font-weight="700">
+                <tspan fill="#0B1F4B">Edu</tspan><tspan fill="#1E56C8">Nova</tspan>
+            </text>
+
+            <!-- Decorative lines -->
+            <line x1="200" y1="212" x2="305" y2="212" stroke="#0B1F4B" stroke-width="0.8" opacity="0.2" mask="url(#txt-gaps)"/>
+            <line x1="375" y1="212" x2="480" y2="212" stroke="#1E56C8" stroke-width="0.8" opacity="0.2" mask="url(#txt-gaps)"/>
+
+            <!-- Slogan -->
+            <text x="340" y="234" text-anchor="middle" font-family="'Helvetica Neue',Arial,sans-serif" font-size="12" fill="#6B7A99">LEARN BEYOND LIMITS</text>
+
+            <!-- Tag pill -->
+            <rect x="293" y="248" width="94" height="20" rx="10" fill="#0B1F4B" opacity="0.08"/>
+            <text x="340" y="262" text-anchor="middle" font-family="'Helvetica Neue',Arial,sans-serif" font-size="10" font-weight="600" fill="#0B1F4B" letter-spacing="1.5" opacity="0.7">ONLINE LEARNING</text>
+        </svg>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-fill"></div>
+    </div>
+
+    <div class="loading-text">Loading lecturer portal…</div>
+
+</div>
+
+<script>
+    setTimeout(() => { window.location.href = 'welcom.html'; }, 3000);
+</script>
+</body>
+</html>
