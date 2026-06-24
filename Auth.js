@@ -8,10 +8,10 @@ const API_BASE_URL = "https://edunova-8ut1.onrender.com";
 
 /* ── ENDPOINT PATHS ─────────────────────────────────────── */
 const ENDPOINTS = {
-  login:    "/auth/login",     // POST { email, password }
-  register: "/auth/register",  // POST multipart/form-data
-  me:       "/auth/me",        // GET  Authorization: Bearer <token>
-  logout:   "/auth/logout",    // POST Authorization: Bearer <token>
+  login:    "/api/auth/login", // POST x-www-form-urlencoded { username, password }
+  register: "/api/auth/register",  // POST multipart/form-data
+  me:       "/api/auth/me",        // GET  Authorization: Bearer <token>
+  logout:   "/api/auth/logout",    // POST Authorization: Bearer <token>
 };
 
 /* ── TOKEN HELPERS ──────────────────────────────────────── */
@@ -63,10 +63,16 @@ async function logout() {
 ──────────────────────────────────────────────────────────── */
 async function apiLogin(email, password) {
   try {
+    // FastAPI OAuth2 requires x-www-form-urlencoded with field "username"
+    const form = new URLSearchParams();
+    form.append("username", email);
+    form.append("password", password);
+    form.append("grant_type", "password");
+
     const res = await fetch(API_BASE_URL + ENDPOINTS.login, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: form.toString(),
     });
     const data = await res.json().catch(() => ({}));
 
@@ -74,7 +80,7 @@ async function apiLogin(email, password) {
       return { ok: false, message: data.message || "Invalid credentials. Please try again." };
     }
 
-    const token   = data.token || data.access_token || data.accessToken;
+    const token   = data.access_token || data.token || data.accessToken;
     const rawUser = data.user  || data;
     const user    = _normaliseUser(rawUser);
     saveSession(token, user);
@@ -108,7 +114,7 @@ async function apiRegister(fields) {
       return { ok: false, message: data.message || "Registration failed. Please try again." };
     }
 
-    const token   = data.token || data.access_token || data.accessToken;
+    const token   = data.access_token || data.token || data.accessToken;
     const user    = _normaliseUser(data.user || data);
     saveSession(token, user);
     return { ok: true, user, token };
