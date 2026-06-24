@@ -170,7 +170,6 @@
       .step-item{min-width:50px;}
     }
   </style>
-<script src="auth.js"></script>
 </head>
 <body>
 
@@ -589,6 +588,12 @@
   // ── STEP NAVIGATION ──
   let termsChecked = false;
 
+  // Guard: wait for Auth.js to be ready
+  function _ready(fn) {
+    if (typeof apiRegister === 'function') { fn(); }
+    else { document.addEventListener('DOMContentLoaded', fn); }
+  }
+
   function setStep(n) {
     document.querySelectorAll('.step-panel').forEach((p,i) => p.classList.toggle('active', i+1===n));
     document.querySelectorAll('.step-item').forEach((s,i) => {
@@ -665,9 +670,11 @@
   function goBack(step) { setStep(step-1); }
 
   // ── Redirect if already logged in ──────────────────────
-  if (isLoggedIn()) {
-    window.location.replace("Dashboard.html");
-  }
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+      window.location.replace("Dashboard.html");
+    }
+  });
 
   // ── API error banner ────────────────────────────────────
   const apiBanner = document.getElementById('apiBanner');
@@ -679,14 +686,21 @@
   }
 
   // SUBMIT
-  document.getElementById('regForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    if (!validateStep4()) return;
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('regForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (!validateStep4()) return;
 
-    const btn = document.getElementById('submitBtn');
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;animation:spin 1s linear infinite"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg> Creating Account…';
-    btn.disabled = true;
-    apiBanner.style.display = 'none';
+      if (typeof apiRegister !== 'function') {
+        showApiError('Auth service not loaded. Please refresh the page and try again.');
+        return;
+      }
+
+      const btn = document.getElementById('submitBtn');
+      const originalBtnHTML = btn.innerHTML;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;animation:spin 1s linear infinite"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg> Creating Account…';
+      btn.disabled = true;
+      apiBanner.style.display = 'none';
 
     // Collect all form fields
     const fields = {
@@ -729,11 +743,12 @@
       const nameEl = ss.querySelector('.success-name');
       if (nameEl) nameEl.textContent = result.user.fullName || result.user.firstName;
     } else {
-      btn.innerHTML = 'Create My Lecturer Account <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:15px;height:15px"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
-      btn.disabled = false;
-      showApiError(result.message || "Registration failed. Please try again.");
-    }
-  });
+        btn.innerHTML = originalBtnHTML;
+        btn.disabled = false;
+        showApiError(result.message || 'Registration failed. Please check your details and try again.');
+      }
+    }); // end submit
+  }); // end DOMContentLoaded
 
   // PASSWORD TOGGLE
   function togglePwd(inputId,iconId){
@@ -764,6 +779,9 @@
   document.getElementById('bio').addEventListener('input',function(){ document.getElementById('bioCount').textContent=this.value.length; });
   document.getElementById('courseDesc').addEventListener('input',function(){ document.getElementById('descCount').textContent=this.value.length; });
 
+  // ── Wire up remaining listeners after DOM ready ──
+  document.addEventListener('DOMContentLoaded', function() {
+
   // CHECK CHIPS
   document.querySelectorAll('.check-chip').forEach(chip=>{
     const cb = chip.querySelector('input[type=checkbox]');
@@ -780,39 +798,76 @@
   });
 
   // AVATAR PREVIEW
-  document.getElementById('avatarFile').addEventListener('change',function(){
-    if(this.files[0]){
-      const r=new FileReader();
-      r.onload=e=>{
-        const img=document.getElementById('avatarPreview');
-        img.src=e.target.result; img.style.display='block';
-        img.previousElementSibling.style.display='none';
-      };
-      r.readAsDataURL(this.files[0]);
-    }
+  document.getElementById('avatarFile').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.getElementById('avatarPreview');
+      const icon = img.parentElement.querySelector('svg');
+      img.src = e.target.result;
+      img.style.display = 'block';
+      if (icon) icon.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
   });
 
   // FILE DROPS
-  function setupDrop(dropId,inputId,nameId){
-    const drop=document.getElementById(dropId),input=document.getElementById(inputId),nameEl=document.getElementById(nameId);
-    input.addEventListener('change',()=>{
-      if(input.files[0]){nameEl.textContent='📎 '+input.files[0].name;nameEl.style.display='block';drop.style.borderColor='var(--success)';}
+  function setupDrop(dropId, inputId, nameId) {
+    const drop = document.getElementById(dropId);
+    const input = document.getElementById(inputId);
+    const nameEl = document.getElementById(nameId);
+    if (!drop || !input || !nameEl) return;
+
+    function showFile(file) {
+      if (!file) return;
+      nameEl.textContent = '📎 ' + file.name;
+      nameEl.style.display = 'block';
+      drop.style.borderColor = 'var(--success)';
+    }
+
+    input.addEventListener('change', function() {
+      if (this.files[0]) showFile(this.files[0]);
     });
-    drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('dragover');});
-    drop.addEventListener('dragleave',()=>drop.classList.remove('dragover'));
-    drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('dragover');input.files=e.dataTransfer.files;input.dispatchEvent(new Event('change'));});
+
+    drop.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      drop.classList.add('dragover');
+    });
+    drop.addEventListener('dragleave', function() {
+      drop.classList.remove('dragover');
+    });
+    drop.addEventListener('drop', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      drop.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        // Create a new DataTransfer to assign files to the input
+        try {
+          const dt = new DataTransfer();
+          dt.items.add(files[0]);
+          input.files = dt.files;
+        } catch(_) {}
+        showFile(files[0]);
+      }
+    });
   }
-  setupDrop('cvDrop','cvFile','cvName');
-  setupDrop('certDrop','certFile','certName');
+  setupDrop('cvDrop', 'cvFile', 'cvName');
+  setupDrop('certDrop', 'certFile', 'certName');
 
   // BLUR VALIDATION
   ['firstName','lastName','email','phone','country'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.addEventListener('blur',()=>{ if(el.value||el.classList.contains('err')) validateStep1(); });
   });
+
+  }); // end DOMContentLoaded for listeners
 </script>
 <style>
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
+<script src="Auth.js"></script>
 </body>
 </html>
