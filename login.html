@@ -427,7 +427,6 @@
     }
   @keyframes spin { to { transform: rotate(360deg); } }
 </style>
-<script src="auth.js"></script>
 </head>
 <body>
 
@@ -623,9 +622,11 @@
   passInput.addEventListener('input', () => { if(passInput.classList.contains('error')) validatePass(); });
 
   // ── Redirect if already logged in ──────────────────────
-  if (isLoggedIn()) {
-    window.location.replace("Dashboard.html");
-  }
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof isLoggedIn === 'function' && isLoggedIn()) {
+      window.location.replace("Dashboard.html");
+    }
+  });
 
   // ── API error banner ────────────────────────────────────
   const apiBanner = document.getElementById('apiBanner');
@@ -665,5 +666,6 @@
     }
   });
 </script>
+<script src="Auth.js"></script>
 </body>
 </html>
