@@ -703,8 +703,8 @@
       experience:    val('experience'),
       linkedin:      val('linkedin'),
       bio:           val('bio'),
-      subjects:      [...document.querySelectorAll('#subjects .check-chip.selected')].map(c => c.textContent.trim()).join(', '),
-      teachingModes: [...document.querySelectorAll('#teachingModes .check-chip.selected')].map(c => c.textContent.trim()).join(', '),
+      subjects:      val('subjectArea'),
+      teachingModes: [...document.querySelectorAll('#teachingMode .check-chip.selected')].map(c => c.textContent.trim()).join(', '),
       languages:     [...document.querySelectorAll('#languages .check-chip.selected')].map(c => c.textContent.trim()).join(', '),
       availability:  val('availability'),
       courseTitle:   val('courseTitle'),
@@ -766,10 +766,9 @@
 
   // CHECK CHIPS
   document.querySelectorAll('.check-chip').forEach(chip=>{
-    chip.addEventListener('click',()=>{
-      const cb=chip.querySelector('input[type=checkbox]');
-      cb.checked=!cb.checked;
-      chip.classList.toggle('selected',cb.checked);
+    const cb = chip.querySelector('input[type=checkbox]');
+    cb.addEventListener('change', () => {
+      chip.classList.toggle('selected', cb.checked);
     });
   });
 
